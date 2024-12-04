@@ -1,0 +1,21 @@
+from flask import Flask, render_template, request
+import pickle
+app = Flask(__name__)
+model = pickle.load(open('model.pkl', 'rb’))
+@app.route('/’)
+def home():    
+	return render_template('index.html')  # Main form page
+@app.route('/predict', methods=['POST’])
+def predict():    # Retrieve data from the form   
+	name = request.form['name']    
+	age = request.form['age']    
+	gender = request.form['gender']   
+	symptoms = request.form['symptoms']   
+	previous_disease = request.form['previous_disease’]
+	if symptoms.lower() != "none":        
+		prediction = f"Appointment is scheduled for {name}."    
+	else:       
+ 		prediction = f"Further analysis needed for {name}."    
+	return render_template('result.html', prediction=prediction)
+if __name__ == "__main__":   
+app.run(debug=True)
